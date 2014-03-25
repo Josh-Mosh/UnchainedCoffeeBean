@@ -1,0 +1,136 @@
+
+<div class='header'>
+	<div class='header-left'>
+		<img src="/assets/LOGO.png">
+	</div>
+</div>
+
+
+
+<div class='container-fluid'>
+
+	<div class='top'>
+		<div class='row task'>
+			<div class='col-md-6 task-left'>
+				<ul>
+					<li class='active'><a href="#">Home</a></li>
+					<li class='inactive'><a href="/shops/new">Add</a></li>
+				</ul>
+			</div>
+			<% if session[:user_id] %>
+				<%= render "partials/loggedin" %>
+			<% else %>
+				<%= render "partials/notloggedin" %>
+			<% end %>
+		</div>
+	</div>
+
+	<div class='body'>
+		<% if session[:user_id] %>
+			<% if @current_user.address %>
+			<p><%= "Your Location: "+  @current_user.address.address %> </p>
+		<% end 
+		end%>
+		
+		<div class='search-form'>
+			<h3>Find chain free coffee shops near you or around the world!</h3>
+			<form class='form-inline row' role='form'>
+
+				<div class='form-group'>
+					<label for="location" class='control-label col-md-3'>Location:</label>
+					<div class='col-md-9'>
+						<input id="address" type='text' name='location' placeholder='Seattle, WA' class='form-control'>
+					</div>
+				</div>
+				<div class='form-group'>
+					<label for='category col-md-3'>Category:</label>
+					<input type='checkbox'> All Shops</input>
+					<input type='checkbox'> Tea</input>
+					<input type='checkbox'> Snacks</input>
+					<input type='checkbox'> Desserts</input>
+					<input type='checkbox'> Full Meals</input>
+					<input type='checkbox'> Breakfast</input>
+				</div>
+				<input type='button' value='Search' class='btn btn-primary' onclick="codeAddress()">
+			</form>
+		</div>
+
+		<div class='map' id='map-canvas'>
+			
+		</div>
+
+		<div class='add-form row'>
+			<div class='add-label col-md-7'>
+				<h3>Know of a great shop we should include?</h3>
+				<h6>Become a member to add your favourite shop: <a href='#' class='registration'>Register</a></h6>
+			</div>
+			<div class='col-md-5'>
+				<% if session[:user_id] %>
+					<a href='shops/new' class='btn btn-lg btn-warning'>Add New Shop</a>
+				<% else %>
+					<a href='shops/new' class='btn btn-lg btn-warning' disabled="disabled">Add New Shop</a>
+				<% end %>
+			</div>
+		</div>
+
+		<div class='shops-near'>
+			<h2>Shops Near You</h2>
+
+			<div class='shops'>
+			
+				<% @shops.each do |shop| %>
+					<div class='shop'>
+						<div class='row'>
+							<div class='col-md-6'>
+								<h3><%= link_to shop.name, shop_path(shop.id) %></h3>
+								<p>Added by: <b><%= link_to shop.user.first_name + ' ' + shop.user.last_name, user_path(User.find(shop.user_id))%></b> on: <%= shop.created_at.to_time.strftime('%B %e at %l:%M %p %Z') %></p>
+								
+								<p><%= shop.description %></p>
+								<p class='shop_address'><b><%= shop.address.address %><b></p>
+							</div>
+							<div class='col-md-3'>
+								<img  class='shop-pic' src="<%= shop.photo %>">
+							</div>
+							<div class='col-md-3'>
+								<%= link_to "See More Info", shop_path(shop.id), class: "btn btn-primary" %>
+								<% if session[:user_id] %>
+									<% @favarr = [] %>
+									<% User.find(session[:user_id]).favorites.each do |favorite| %>
+										<% @favarr.push(favorite.shop_id) %>
+									<% end %>
+									<%  if @favarr.include?(shop.id) %>
+										<%= link_to "Remove from Favorites", favorite_path(shop.id), method: :delete, class: 'btn btn-danger' %>
+									<% else %>
+										<%= simple_form_for @favorite, url: {action: 'create', controller: 'favorites'} do |f| %>
+											<%= f.input :shop_id, as: :hidden, input_html: {value: shop.id} %>
+											<%= f.button :submit, value: 'Add to Favorites', class: 'btn btn-success' %>
+										<% end %>
+									<% end %>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				<% end %>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Registration Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    	<%= render "partials/register" %>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    	<%= render "partials/login" %>
+    </div>
+  </div>
+</div>

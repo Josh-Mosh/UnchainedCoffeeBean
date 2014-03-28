@@ -1,7 +1,4 @@
 Unchainedcoffeebean::Application.routes.draw do
-
-  post '/rate' => 'rater#create', :as => 'rate'
-  get "ratings/update"
   root "coffee_beans#index"
   get "coffee_beans/index"
 
@@ -11,11 +8,15 @@ Unchainedcoffeebean::Application.routes.draw do
   resources :comments, only: [:create, :destroy]
   resources :favorites, only: [:create, :destroy]
   resources :ratings, only: :update
+  resources :activities, only: [:create, :destroy]
 
   get "/profile", to: "users#show"
   get "/shop", to: "shops#show"
 
   get "/logout", to: "sessions#destroy"
+  post "/near", to: "shops#near"
+  post "shops/new", to: "shops#new"
+  get "/near", to: "shops#near"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

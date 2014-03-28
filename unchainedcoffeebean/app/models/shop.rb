@@ -1,5 +1,5 @@
 class Shop < ActiveRecord::Base
-	attr_accessor :street, :city, :state, :zip
+	attr_accessor :number, :street, :city, :state, :zip, :cntry
 
   belongs_to :user
 
@@ -11,6 +11,9 @@ class Shop < ActiveRecord::Base
   # has_many :images, dependent: :destroy
   # accepts_nested_attributes_for :images, :reject_if => lambda { |t| t['image'].nil? }
   has_and_belongs_to_many :categories
+
+  has_many :activities
+
 
   validates :name, presence: true
   validates :address, presence: true

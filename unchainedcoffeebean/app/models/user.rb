@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :address
 	has_many :favorites
 	has_many :comments
+  has_many :activities
 
 	email_regex = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]+)\z/i
 

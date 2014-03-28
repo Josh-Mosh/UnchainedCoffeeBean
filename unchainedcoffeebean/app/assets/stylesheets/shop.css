@@ -1,6 +1,6 @@
 
 .shop_info {
-	margin: 20px;
+	margin: 0px;
 	border: 1px solid silver;
 	padding: 20px;
 	border-radius: 10px;
@@ -50,12 +50,12 @@
 		text-align: center;
 	}
 
-	.favorite_button {
-		margin-top: 10px;
+	.add_favorite .delete_fav {
+		margin-top: 15px;
 	}
 
 .all_comments {
-	margin: 20px;
+	margin: 0px;
 	border: 1px solid silver;
 	padding: 20px;
 	border-radius: 10px;

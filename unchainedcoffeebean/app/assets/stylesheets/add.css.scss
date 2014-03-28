@@ -8,7 +8,6 @@ ul {
 	padding: 0px;
 }
 
-
 .add-shop{
 	border: 1px solid silver;
 	border-radius: 10px;
@@ -34,9 +33,14 @@ ul {
 		padding-left: 0px;
 	}
 
+	.pac-matched, .pac-item {
+		font-size: 14px;
+	}
+
 .map2 {
 	width: 100%;
 	height: 300px;
+	border: 1px solid silver;
 }
 
 .options {
@@ -68,5 +72,6 @@ ul {
 }
 
 .form-group {
+	margin-bottom: 5px;
 	display: block;
 }

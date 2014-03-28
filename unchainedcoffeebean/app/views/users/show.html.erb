@@ -65,8 +65,8 @@
 									<td><h4><%= link_to favorite.shop.name, shop_path(favorite.shop_id) %></h4></td>
 									<td><h4><%= favorite.shop.address.address %></h4></td>
 								</tr>
-								<% end 
-							end %>
+								<% end %>
+							<% end %>
 
 						</table>
 					</div>
@@ -76,7 +76,8 @@
 	</div>
 
 	<div class='row recent_activity'>
-		<h2>Mosh's Recent Activity</h2>
+		<h2><%= @showuser.first_name %>'s Recent Activity</h2>
+		
 		<div class='activities'>
 			<table class='table'>
 				<thead>

@@ -13,8 +13,8 @@ class CoffeeBeansController < ApplicationController
   	gon.addresses = Address.all.where("addressable_type = 'Shop'")
   	
   	gon.shops = Shop.all.order("id")
-  	@favorite = Favorite.new
 
+  	@favorite = Favorite.new
   end
 
 end

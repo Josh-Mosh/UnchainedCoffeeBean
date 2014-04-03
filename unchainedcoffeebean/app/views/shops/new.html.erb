@@ -1,9 +1,4 @@
 
-<div class='header'>
-	<div class='row'>
-		<img src="/assets/LOGO.png">
-	</div>	
-</div>
 
 <div class='container-fluid'>
 	<div class='top'>
@@ -18,12 +13,11 @@
 		</div>
 	</div>
 
-
 	<div class='body'>
 		<div class=' row add-shop'>
 			<div class='col-md-6 form-left'>
 				<h3>Manually Add A Coffee Shop:</h3>
-				<%= simple_form_for @shop, url: {action: 'create', controller: 'shops'} do |f| %>
+				<%= simple_form_for @shop, url: {action: 'create', controller: 'shops'}, html: {id: "top-shop"} do |f| %>
 				<h4>Name of Coffee Shop: </h4>
 				<%= f.input :name, label:false, input_html: {class: 'form-control shop_name', placeholder: "Shop Name"}, autofocus: true %>
 
@@ -48,7 +42,7 @@
 				</div>
 				<div class='form-group row'>
 					<label for='State' class='col-md-2 control-label'>State: </label>
-					<div class='col-md-2'>
+					<div class='col-md-4'>
 						<%= f.input :state, label:false, input_html: {class: 'form-control', id: 'administrative_area_level_1', placeholder: "WA"} %>
 					</div>
 				</div>
@@ -62,7 +56,6 @@
 					<label for='country' class='col-md-2 control-label'>Country: </label>
 					<div class='col-md-4'>
 						<%= f.input :cntry, label:false, input_html: {class: 'form-control', id: 'country', placeholder: "United States"} %>
-						<% end %>
 					</div>
 				</div>
 				
@@ -70,11 +63,10 @@
 		
 			<div class='col-md-6 form-right'>
 				<h3>Find Shop With Map:</h3>
-				<div class='form-group map_group'>
+				<div class='map_group'>
 
 					<div class='form-group placesearch'>
-						<input id="pac-input" type='text' name='place' placeholder="Mom n Pop's Coffee" class=' col-md-8 form-control'>
-						<label for="place" class='control-label col-md-offset-1'>Search by Region, Shop Name, or Address</label>
+						<input id="pac-input" type='text' name='place' placeholder="Search by Shop Name, Region, or Address" class=' col-md-8 form-control'>
 						<p class='col-md-offset-1'>Click on a marker to add its address information</p>
 					</div>
 
@@ -92,7 +84,6 @@
 						<h4>Check All that apply</h4>
 						<div class='row'>
 							<div class='col-md-6'>
-								<%= simple_form_for @shop, html: { multipart: true }, url: {action: 'create', controller: 'shops'} do |f| %>
 								<%= f.association :categories, as: :check_boxes, label:false %>
 							</div>
 						</div>
@@ -102,7 +93,7 @@
 						<h4>Pricing</h4>
 						<div class='row'>
 							<div class='col-md-3'>
-								<%= f.input :pricing, collection: ["$", "$$", "$$$"],  as: :radio_buttons, label:false %>
+								<%= f.input :pricing, collection: ["$", "$$", "$$$", "$$$$"],  as: :radio_buttons, label:false %>
 							</div>
 						</div>
 					</div>
@@ -113,7 +104,7 @@
 						<h4>Website</h4>
 						<div class='row'>
 							<div class='col-md-12'>
-								<%= f.input :website, label:false, input_html: {class: 'form-control', placeholder: "Shop Website"} %>
+								<%= f.input :website, label:false, input_html: {class: 'form-control shop_website', placeholder: "Shop Website"} %>
 							</div>
 						</div>
 						<h4>Descripton</h4>
@@ -126,10 +117,13 @@
 					<div class='images'>
 						<h4>Upload Some images of this shop</h4>
 						<div class='row'>
-							<div class='col-md-12'>
-								<img src="/assets/thumbnail-preview.png">
-								<img src="/assets/thumbnail-preview.png">
-								<img src="/assets/thumbnail-preview.png">
+							<div class='col-md-12 photos_div'>
+								<img style='display:none' class='photo_prev' src="/assets/thumbnail-preview.png">
+								<%= f.input :url, input_html: {class: 'form-control photo_url', placeholder: "http://imageurl.png"} %>
+							</div>
+						</div>
+						<div class='row'>
+							<div class='col-md-12 photos_div'>
 								<%= f.input :photo, as: :file %>
 							</div>
 						</div>

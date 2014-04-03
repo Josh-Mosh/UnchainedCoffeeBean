@@ -65,7 +65,7 @@ function addMarkerArray(ne, sw)
       content: "holding..."
     });
 
-  for(var i = 0; i < gon.addresses.length; i++) 
+  for(var i = 0; i < gon.addresses.length; i++)
   {
     var latitude = gon.addresses[i].latitude;
     var longitude = gon.addresses[i].longitude;
@@ -81,22 +81,31 @@ function addMarkerArray(ne, sw)
       {
         shown_markers.push(gon.shops[i]);
       }
+
+      var shopsite = gon.shops[i].website;
+      if(shopsite.substr(0, 4) !== 'http')
+      {
+        shopsite = "http://" + shopsite;
+      }
       
-      var marker = new google.maps.Marker({
-        position: myLatlng,
-        map: map,
-        info: "<div class=info_window'><h5>"+gon.shops[i].name+"</h5>"+
-              "<p>"+gon.addresses[i].address+ "</p>"+
-              "<p>"+gon.shops[i].pricing +' - rating </p>'+
-              "<a href='http://www."+gon.shops[i].website+"' target='_blank'>"+gon.shops[i].website + "</p></div>"
+      if(shown_markers.length < 51)
+      {
+        var marker = new google.maps.Marker({
+          position: myLatlng,
+          map: map,
+          info: "<div class=info_window'><h5>"+gon.shops[i].name+"</h5>"+
+                "<p>"+gon.addresses[i].address+ "</p>"+
+                "<p>"+gon.shops[i].pricing +' - rating </p>'+
+                "<a href='"+shopsite+"' target='_blank'>"+shopsite+ "</p></div>"
+          });
+
+        markers.push(marker);
+
+        google.maps.event.addListener(marker, 'mouseover', function() {
+          infowindow.setContent(this.info);
+          infowindow.open(map, this);
         });
-
-      markers.push(marker);
-
-      google.maps.event.addListener(marker, 'mouseover', function() {
-        infowindow.setContent(this.info);
-        infowindow.open(map, this);
-      });
+      }
     }
   }
 }

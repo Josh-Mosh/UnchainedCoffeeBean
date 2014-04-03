@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140327022238) do
+ActiveRecord::Schema.define(version: 20140328194002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,15 @@ ActiveRecord::Schema.define(version: 20140327022238) do
   add_index "comments", ["shop_id"], name: "index_comments_on_shop_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
+  create_table "external_images", force: true do |t|
+    t.text     "url"
+    t.integer  "shop_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "external_images", ["shop_id"], name: "index_external_images_on_shop_id", using: :btree
+
   create_table "favorites", force: true do |t|
     t.integer  "user_id"
     t.integer  "shop_id"
@@ -68,18 +77,6 @@ ActiveRecord::Schema.define(version: 20140327022238) do
 
   add_index "favorites", ["shop_id"], name: "index_favorites_on_shop_id", using: :btree
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
-
-  create_table "images", force: true do |t|
-    t.integer  "shop_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "photo_file_name"
-    t.string   "photo_content_type"
-    t.integer  "photo_file_size"
-    t.datetime "photo_updated_at"
-  end
-
-  add_index "images", ["shop_id"], name: "index_images_on_shop_id", using: :btree
 
   create_table "rates", force: true do |t|
     t.integer  "rater_id"

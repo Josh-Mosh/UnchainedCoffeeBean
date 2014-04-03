@@ -38,7 +38,9 @@ function initialize() {
 
   var searchBox = new google.maps.places.SearchBox(input);
 
-  var address = (document.getElementById('address'))
+  // var address = (document.getElementById('address'));
+
+  var service = new google.maps.places.PlacesService(map);
 
 
   function fillInAddress(place) {
@@ -60,7 +62,6 @@ function initialize() {
     }
   }
 
-
   google.maps.event.addListener(searchBox, 'places_changed', function() {
     var places = searchBox.getPlaces();
 
@@ -72,15 +73,27 @@ function initialize() {
     var bounds = new google.maps.LatLngBounds();
 
     for (var i = 0, place; place = places[i]; i++) {
-      var image = {
-		  url: place.icon,
-		  size: new google.maps.Size(71, 71),
-		  origin: new google.maps.Point(0, 0),
-		  anchor: new google.maps.Point(17, 34),
-		  scaledSize: new google.maps.Size(25, 25)
+      
+
+      var request = {
+        reference: place.reference
       };
 
-      // Create a marker for each place - if place is establishment
+      var website
+
+      if(place.price_level) { var pricing = place.price_level }
+      else  { var pricing = ''}
+
+      service.getDetails(request, function(place, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          console.log(place)
+          var image = {
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(25, 25)
+            };
 
       if((place.types.indexOf('food') > -1 || place.types.indexOf('cafe') > -1) && place.name !== 'Starbucks Coffee' && place.name !== 'Starbucks' && place.name !== "Tully's Coffee" && place.name !== "Dunkin' Donuts")
       {
@@ -91,33 +104,48 @@ function initialize() {
         address: place.formatted_address,
         latitude: place.geometry.location.k,
         longitude: place.geometry.location.A,
-        position: place.geometry.location
+        position: place.geometry.location,
+        website: place.website,
+        pricing: pricing,
+        photo: place.photos[0].getUrl({'maxWidth': 300, 'maxHeight': 300})
       });
-
+      
       google.maps.event.addListener(marker, 'mouseover', function() {
       	infoWindow.setContent(this.title);
         infoWindow.open(map, this);
       });
 
       google.maps.event.addListener(marker, 'click', function() {
-        console.log(this)
         var latlng = new google.maps.LatLng(this.latitude, this.longitude);
         geocoder.geocode({'latLng': latlng}, function(results, status) {
-          console.log('RESULTS:   ', results);
-          if (status == google.maps.GeocoderStatus.OK) {
-            
+        if (status == google.maps.GeocoderStatus.OK) {
             var place = results[0];
             fillInAddress(place);
           }
         });
+
+        if(this.pricing == 1) { price = '$$'; }
+        else if(this.pricing == 2) { price = '$$'; }
+        else if(this.pricing == 3) { price = '$$$'; } 
+        else if(this.pricing == 4) { price = '$$$$'; }
+
+        console.log('WEBSITE ', place.website);
+
          $('.shop_name').val(this.title);
          $('#address').val(this.address);
+         $('.shop_website').val(this.website);
+         $("input[value='"+price+"']").attr('checked', 'checked')
+         $('.photo_prev').show();
+         $('.photo_prev').attr('src', this.photo);
+         $('.photo_url').val(this.photo);
+
       });
 
       markers.push(marker);
 
-      }
-
+       }
+       }
+      });
       bounds.extend(place.geometry.location);
     }
 

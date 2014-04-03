@@ -3,9 +3,9 @@ class User < ActiveRecord::Base
 	has_many :shops
 	has_one :address, as: :addressable, dependent: :destroy
   accepts_nested_attributes_for :address
-	has_many :favorites
-	has_many :comments
-  has_many :activities
+	has_many :favorites, dependent: :destroy
+	has_many :comments, dependent: :destroy
+  has_many :activities, dependent: :destroy
 
 	email_regex = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]+)\z/i
 

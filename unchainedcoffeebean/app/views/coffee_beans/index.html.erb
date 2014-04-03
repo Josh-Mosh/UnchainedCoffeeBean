@@ -1,10 +1,4 @@
 
-<div class='header'>
-	<div class='header-left'>
-		<img src="/assets/LOGO.png">
-	</div>
-</div>
-
 <div class='maprefresh' style='display:none'>
 	<form id='maprefresh' action='/near' method='post'>
 		<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
@@ -19,6 +13,7 @@
 <div class='container-fluid'>
 	<div class='button_div'>
 		<button id='myButton'>Click Me</button>
+		<button id='mapslide'>Resize Map</button>
 	</div>
 
 	<div class='top'>
@@ -46,21 +41,59 @@
 		
 		<div class='search-form'>
 			<h3>Find chain free coffee shops near you or around the world!</h3>
-			<form class='form-inline row mapsearch' role='form' >
-				<div class='form-group'>
-					<label for="location" class='control-label col-md-3'>Location:</label>
-					<div class='col-md-9'>
+			<form class='form-inline mapsearch row' role='form' >
+					<div class='col-md-1'>
+						<label for="location" class='control-label'>Location:</label>
+					</div>
+					<div class='col-md-7'>
 						<input id="address" type='text' name='location' placeholder='Seattle, WA' class='form-control'>
 					</div>
-				</div>
-				<input type='submit' value='Search' class='btn btn-primary'>
+					<div class='col-md-3'>
+						<input type='submit' value='Search' class='btn btn-primary'>
+					</div>
 			</form>
-
-
 		</div>
 
-		<div class='map' id='map-canvas'>
-			
+		<div class='row'>
+			<div class='col-md-9'>
+				<div class='map col-md-9' id='map-canvas'>
+					
+				</div>
+			</div>
+
+			<div class='col-md-3'>
+				<div id='activity_div'>
+					<h3>Recent Activities</h3>
+					<div class='show_activities'>
+						<% if @activities.any?
+							   @activities.reverse.each do |activity| 
+							   if activity.user.gender == 'Male'
+							   	pronoun = 'his'
+							   else
+							   	pronoun = 'her'
+							   end %>
+							<div class='activity'>
+								<p><span><%= activity.created_at.to_time.strftime('%B %e at %l:%M %p') %></span></p>
+								<p>
+									<a href="<%= user_path(activity.user_id) %>"><%= activity.user.first_name + ' ' + activity.user.last_name %></a> added <a href="<%= shop_path(activity.shop_id) %>"><%= activity.shop.name %></a>
+									<% if activity.kind == 'favorite' %>
+										to 
+										<% if pronoun %>
+											<%= pronoun %>
+										<% else %>
+											their
+										<% end %>
+										 favorites.
+									<% elsif activity.kind == 'newshop' %>
+										to our database.
+									<% end %>
+								</p>
+							</div>
+							<% end
+						end %>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class='add-form row'>
@@ -72,8 +105,11 @@
 				<% if session[:user_id] %>
 					<a href='shops/new' class='btn btn-lg btn-warning'>Add New Shop</a>
 				<% else %>
-					<a href='shops/new' class='btn btn-lg btn-warning' disabled="disabled">Add New Shop</a>
+					<a href='shops/new' class='btn btn-lg btn-warning disabled'>Add New Shop</a>
 				<% end %>
+			</div>
+			<div class='tip' style='display:none'>
+				<p>You must be registered to Add new Shops</p>
 			</div>
 		</div>
 

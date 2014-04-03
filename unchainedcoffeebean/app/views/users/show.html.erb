@@ -1,10 +1,4 @@
 
-<div class='header'>
-	<div class='header-left'>
-		<img src="/assets/LOGO.png">
-	</div>
-</div>
-
 <div class='container-fluid'>
 	
 	<div class='top'>
@@ -19,7 +13,12 @@
 				<div class='col-md-6 task-right'>
 					<ul>
 						<li id='user_info' class='inactive'>Welcome, <%= User.find(session[:user_id]).first_name %></li>
-						<%= link_to( "<li class='inactive'>My Profile</li>".html_safe, user_path(session[:user_id])) %>
+						<% if @current_user.id == @showuser.id %>
+							<%= link_to( "<li class='active'>My Profile</li>".html_safe, user_path(session[:user_id])) %>
+						<% else %>
+							<%= link_to( "<li class='inactive'>My Profile</li>".html_safe, user_path(session[:user_id])) %>
+						<% end %>
+
 						<li class='inactive'><a href="/logout">Logout</a>
 					</ul>
 				</div>
@@ -85,22 +84,20 @@
 					<th>What</th>
 				</thead>
 				<tbody>
-					<tr class='activity'>
-						<td>01/13/2014</td>
-						<td>Josh Mosh added <a href="show.html">Coco Coffee Downtown</a> to his favorites!</td>
-					</tr>
-					<tr class='activity'>
-						<td>01/12/2014</td>
-						<td>Josh Mosh added <a href="#">Pikes Coffee</a> to his favorites!</td>
-					</tr>
-					<tr class='activity'>
-						<td>01/03/2014</td>
-						<td>Josh Mosh added <a href="show.html">Coco Coffee Downtown</a> to our map</td>
-					</tr>
-					<tr class='activity'>
-						<td>01/02/2014</td>
-						<td>Josh Mosh joined unchainedcoffeebean.com!</td>
-					</tr>
+					<% @showuser.activities.reverse.each do |activity| %>
+						<tr class='activity'>
+							<td><%= activity.created_at.to_time.strftime('%B %e at %l:%M %p') %>
+							</td>
+							<td>
+								<%= @showuser.first_name %> added <a href="<%= shop_path(activity.shop_id) %>"><%= activity.shop.name %></a> 
+								<% if activity.kind == 'favorite' %>
+								to his favorites.
+								<% elsif activity.kind == 'newshop' %>
+								to our database.
+								<% end %>
+							</td>
+						</tr>
+					<% end %>
 				</tbody>
 			</table>
 		</div>

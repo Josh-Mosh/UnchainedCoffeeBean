@@ -12,16 +12,21 @@ class ShopsController < ApplicationController
   end
 
   def create
+    puts params
     shop = params[:shop]
     @user = User.find(session[:user_id])
     address = [shop[:number], shop[:street], shop[:city], shop[:state], shop[:zip], shop[:cntry]].compact.join(', ')
     @shop = @user.shops.create(shop_params)
     @address = Address.new(address: address)
     @shop.address = @address
+
     @shop.save
     if @shop.save
-      flash[:success] = "Successfully Added New Shop"
-      redirect_to "/"
+      @activity = @user.activities.create(shop_id: @shop.id, kind: "newshop")
+      if shop[:url]
+        @shop.external_images.create(url: params[:shop][:url])
+      end
+      @new_activity = @activity
     else
       flash[:errors] = @shop.errors.full_messages
       redirect_to "/shops/new"
@@ -51,14 +56,15 @@ class ShopsController < ApplicationController
   end
 
   def near
-    puts params
     @favorite = Favorite.new
     @allshops = Shop.all
     @shown_shops = []
     @user = User.new
     @allshops.each do |shop|
       if shop.address.latitude < params[:north].to_f and shop.address.latitude > params[:south].to_f and shop.address.longitude < params[:east].to_f and shop.address.longitude > params[:west].to_f
-        @shown_shops.push(shop)
+        if @shown_shops.length < 50
+          @shown_shops.push(shop)
+        end
       end
     end
   end

@@ -32,13 +32,30 @@
 
 				<h1 class='name'><%= @showshop.name %></h1>
 				<div class='row shop_pics'>
-					<img src="<%= @showshop.photo %>">
+					<% if @showshop.external_images.any? %>
+						<% @showshop.external_images.last(3).each do |image| %>
+							<img src="<%= image.url %>">
+						<% end %>
+					<% else %>
+						<img src="<%= @showshop.photo %>">
+					<% end %>
 				</div>
 				<h5><%= @showshop.description %></h5>
-				<p>Added on: <span><%= @showshop.created_at.to_time.strftime('%B %e at %l:%M %p %Z') %></span> by <span><%= link_to @showshop.user.first_name + ' ' + @showshop.user.last_name, user_path(@showshop.user.id) %></span></p>
+				<p>Added on: <span><%= @showshop.created_at.to_time.strftime('%B %e at %l:%M %p %Z') %></span> by 
+					<% if @showshop.user %>
+					<span><%= link_to @showshop.user.first_name + ' ' + @showshop.user.last_name, user_path(@showshop.user.id) %></span>
+					<% else %>
+						User
+					<% end %>
+				</p>
 				<img src="/assets/rating.png">
 				<h4>502 South Street, Seattle, WA. 32352</h4>
-				<%= link_to(@showshop.website, "http://"+@showshop.website) %>
+				<% if @showshop.website.start_with?("http")
+					website = @showshop.website
+				else
+					website = 'http://'+@showshop.website
+				end %>
+				<%= link_to(@showshop.website, website) %>
 			</div>
 			<div class='col-md-4'>
 				<h3>View on map</h3>
